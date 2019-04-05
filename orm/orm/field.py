@@ -10,7 +10,11 @@ class Field:
 
     def validate(self, value):
         if value is None and not self.required and not self.default:
-            raise FieldError
+            raise FieldError('required field is empty')
+
+        if type(value) != self.f_type:
+            raise FieldError('wrong value type')
+
         return self.f_type(value)
 
 
