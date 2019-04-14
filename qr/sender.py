@@ -6,7 +6,6 @@ from vk_api.utils import get_random_id
 from vk_api import VkUpload, VkUserPermissions
 
 USER_ID = os.getenv('USER_ID')
-GROUP_ID = os.getenv('GROUP_ID')
 TOKEN = os.getenv('TOKEN')
 PUSH_RPS = 20
 
