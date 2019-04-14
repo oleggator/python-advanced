@@ -22,7 +22,6 @@ class Sender:
 
     def send(self):
         while True:
-            print('waiting...')
             msg = self.queue.get()
             if isinstance(msg, Sender.Stop):
                 break
@@ -32,6 +31,5 @@ class Sender:
                 user_id=USER_ID,
                 attachment=f'photo{photo["owner_id"]}_{photo["id"]}',
                 random_id=get_random_id(),
-                message='ok'
             )
             sleep(1 / (PUSH_RPS - 1))
