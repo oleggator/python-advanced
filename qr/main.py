@@ -6,7 +6,7 @@ from sender import Sender
 if __name__ == '__main__':
     m = Manager()
     q = m.Queue()
-    gen = QRGenerator(q)
+    gen = QRGenerator(q, 'template.png')
     sender = Sender(q)
 
     sender_process = Process(target=sender.send)
