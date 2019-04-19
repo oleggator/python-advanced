@@ -95,3 +95,6 @@ class QuerySet:
             tuples.append(self.model_cls(**field_values))
 
         return tuples
+
+    def __iter__(self):
+        return iter(self.evaluate())
