@@ -63,22 +63,11 @@ class QuerySet:
 
     def get(self, pk):
         pk_name = self.model_cls.pk_field_name
-        table_name = self.model_cls._table_name
-        field_names = self.model_cls.get_field_names()
-        field_names_string = ', '.join(field_names)
-
         pk_validated = getattr(self.model_cls, pk_name).validate(pk)
-
-        query = f'select {field_names_string} from {table_name} where {pk_name} = ?'
-        cursor = self.conn.cursor()
-        cursor.execute(query, (pk_validated,))
-
-        result = cursor.fetchone()
-        if result is None:
+        result = self.filter(**{pk_name: pk_validated}).evaluate()
+        if len(result) == 0:
             raise DoesNotExistError(f'{self.model_cls.__name__} with {pk_name}={pk_validated} does not exists')
-
-        field_values = dict(zip(field_names, result))
-        return self.model_cls(**field_values)
+        return result
 
     def all(self):
         table_name = self.model_cls._table_name
