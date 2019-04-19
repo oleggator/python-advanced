@@ -11,7 +11,8 @@ def main():
         user = User.objects.create(conn, id=1, name='user1')
         print('inserted user:', user)
 
-        for user in User.objects.filter(conn, name='user1'):
+        users = User.objects.all(conn)
+        for user in users.filter(name='user1'):
             print('filetered user:', user)
 
         queried_user = User.objects.get(conn, pk=1)

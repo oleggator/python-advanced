@@ -1,5 +1,7 @@
 from orm.exceptions import DoesNotExistError
 
+from copy import deepcopy
+
 
 class QuerySet:
     def __init__(self, conn, models_cls):
@@ -67,23 +69,10 @@ class QuerySet:
         result = self.filter(**{pk_name: pk_validated}).evaluate()
         if len(result) == 0:
             raise DoesNotExistError(f'{self.model_cls.__name__} with {pk_name}={pk_validated} does not exists')
-        return result
+        return result[0]
 
     def all(self):
-        table_name = self.model_cls._table_name
-        field_names = self.model_cls.get_field_names()
-        field_names_string = ', '.join(field_names)
-
-        query = f'select {field_names_string} from {table_name}'
-        cursor = self.conn.cursor()
-        cursor.execute(query)
-
-        tuples = []
-        for row in cursor.fetchall():
-            field_values = dict(zip(field_names, row))
-            tuples.append(self.model_cls(**field_values))
-
-        return tuples
+        return deepcopy(self)
 
     def __iter__(self):
         return iter(self.evaluate())

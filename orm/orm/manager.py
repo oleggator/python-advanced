@@ -20,4 +20,4 @@ class Manager:
         return QuerySet(conn, self.model_cls).filter(**kwargs)
 
     def all(self, conn):
-        return QuerySet(conn, self.model_cls).all()
+        return QuerySet(conn, self.model_cls)
