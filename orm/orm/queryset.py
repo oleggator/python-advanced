@@ -25,9 +25,9 @@ class QuerySet:
         table_name = self.model_cls._table_name
         field_names = self.model_cls.get_field_names()
         field_names_string = ', '.join(field_names)
-        where_fields_string = ', '.join(fields)
+        where_fields_string = f'where {", ".join(fields)}'
 
-        query = f'select {field_names_string} from {table_name} where {where_fields_string}'
+        query = f'select {field_names_string} from {table_name} {where_fields_string}'
         cursor = self.conn.cursor()
         cursor.execute(query, values)
 
@@ -53,9 +53,9 @@ class QuerySet:
             values.append(validated_value)
 
         table_name = self.model_cls._table_name
-        where_fields_string = ', '.join(fields)
+        where_fields_string = f'where {", ".join(fields)}'
 
-        query = f'delete from {table_name} where {where_fields_string}'
+        query = f'delete from {table_name} {where_fields_string}'
         cursor = self.conn.cursor()
         cursor.execute(query, values)
 
