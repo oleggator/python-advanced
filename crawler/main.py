@@ -38,7 +38,7 @@ async def main():
     es_endpoint = 'http://localhost:9200'
 
     async with Elasticsearch(es_endpoint, retry_on_timeout=True, max_retries=10) as es:
-        if not es.indices.exists(INDEX_NAME):
+        if not await es.indices.exists(INDEX_NAME):
             try:
                 await es.indices.create(INDEX_NAME, mapping)
             except Exception as e:
