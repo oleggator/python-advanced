@@ -1,5 +1,10 @@
+from os import getenv
+
 from aioelasticsearch import Elasticsearch
 from aiohttp import web
+
+es_endpoint = getenv('ES_ENDPOINT')
+INDEX_NAME = 'sites'
 
 
 async def handle(request: web.Request):
@@ -15,7 +20,9 @@ async def handle(request: web.Request):
     if 'offset' in request.rel_url.query:
         offset = request.rel_url.query['offset']
 
-    async with Elasticsearch() as es:
+    async with Elasticsearch(es_endpoint) as es:
+        if not await es.indices.exists(INDEX_NAME):
+            return web.Response(status=404)
         resp = await es.search('sites', '_doc', q=query, from_=offset, size=limit)
 
         hits = sorted(resp['hits']['hits'], key=lambda hit: hit['_score'], reverse=True)
