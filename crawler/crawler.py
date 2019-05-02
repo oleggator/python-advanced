@@ -1,6 +1,6 @@
 import asyncio
 import re
-from asyncio import Queue
+from asyncio import Queue, Event
 from dataclasses import dataclass
 from urllib.parse import urljoin, urlparse
 
@@ -43,14 +43,16 @@ class Crawler:
         self.throttler = Throttler(rate)
 
         self.concurrency = concurrency
+        self.locked_coroutine_count = 0
 
         self.article_queue = article_queue or Queue()
         self.link_queue = LinkQueue()
 
         self.producers = [asyncio.create_task(self.crawl()) for _ in range(concurrency)]
+        self.done = Event()
 
     async def join(self):
-        await self.link_queue.join()
+        await self.done.wait()
         for task in self.producers:
             task.cancel()
 
@@ -60,7 +62,12 @@ class Crawler:
     async def crawl(self):
         async with ClientSession() as session:
             while True:
+                self.locked_coroutine_count += 1
+                if self.link_queue.empty() and self.locked_coroutine_count == self.concurrency:
+                    self.done.set()
+
                 root_url, path = await self.link_queue.get()
+                self.locked_coroutine_count -= 1
 
                 full_url = urljoin(root_url, path)
                 async with self.throttler, session.get(full_url, allow_redirects=False) as resp:
