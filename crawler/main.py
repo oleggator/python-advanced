@@ -17,7 +17,7 @@ mapping = {
 INDEX_NAME = 'sites'
 
 
-async def pusher(article_queue: Queue, es: Elasticsearch):
+async def pusher(article_queue: Queue, es: Elasticsearch) -> None:
     while True:
         article = await article_queue.get()
         print(article.url)

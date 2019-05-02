@@ -2,6 +2,7 @@ import asyncio
 import re
 from asyncio import Queue, Event
 from dataclasses import dataclass
+from typing import Tuple
 from urllib.parse import urljoin, urlparse
 
 import html2text
@@ -15,16 +16,16 @@ class Article:
     site: str
     url: str
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.url)
 
 
 class LinkQueue(Queue):
-    def _init(self, maxsize):
+    def _init(self, maxsize: int) -> None:
         super()._init(maxsize)
         self._put_items = set()
 
-    def put_nowait(self, item):
+    def put_nowait(self, item: Tuple[str, str]) -> None:
         root_url, url = item
         full_url = urljoin(root_url, url)
         if full_url not in self._put_items:
@@ -36,7 +37,7 @@ class Crawler:
     title_regex = b'<title.*?>(.*?)</title.*?>'
     link_regex = b'<a.+?href=\"(.+?)\".*?>.*?</a.*?>'
 
-    def __init__(self, rate: int = 10, concurrency: int = 5, article_queue: Queue = None):
+    def __init__(self, rate: int = 10, concurrency: int = 5, article_queue: Queue = None) -> None:
         self.h = html2text.HTML2Text()
         self.h.ignore_links = True
 
@@ -48,18 +49,18 @@ class Crawler:
         self.article_queue = article_queue or Queue()
         self.link_queue = LinkQueue()
 
-        self.producers = [asyncio.create_task(self.crawl()) for _ in range(concurrency)]
+        self.producers = [asyncio.create_task(self._crawl()) for _ in range(concurrency)]
         self.done = Event()
 
-    async def join(self):
+    async def join(self) -> None:
         await self.done.wait()
         for task in self.producers:
             task.cancel()
 
-    async def add_crawl(self, url: str):
+    async def add_crawl(self, url: str) -> None:
         await self.link_queue.put((url, urlparse(url).path))
 
-    async def crawl(self):
+    async def _crawl(self) -> None:
         async with ClientSession() as session:
             while True:
                 self.locked_coroutine_count += 1
