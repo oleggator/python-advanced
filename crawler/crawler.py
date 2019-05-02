@@ -23,19 +23,15 @@ class Article:
 
 class LinkQueue(Queue):
     def _init(self, maxsize):
-        self._queue = collections.deque()
+        super()._init(maxsize)
         self._put_items = set()
 
-    def _get(self):
-        return self._queue.popleft()
-
-    def _put(self, item):
+    def put_nowait(self, item):
         root_url, url = item
         full_url = urljoin(root_url, url)
-
         if full_url not in self._put_items:
             self._put_items.add(full_url)
-            self._queue.append(item)
+            super().put_nowait(item)
 
 
 class Crawler:
