@@ -6,7 +6,7 @@ from crawler import Crawler
 mapping = {
     'mappings': {
         'properties': {
-            'title': {'type': 'keyword'},
+            'title': {'type': 'text'},
             'url': {'type': 'keyword'},
             'site': {'type': 'keyword'},
         },
