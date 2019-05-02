@@ -83,7 +83,7 @@ class Crawler:
                                 path = urlparse(link).path
 
                                 if urlparse(link).netloc == urlparse(root_url).netloc:
-                                    self.link_queue.put_nowait((root_url, path))
+                                    await self.link_queue.put((root_url, path))
 
                             self.article_queue.put_nowait(Article(
                                 title=self.h.handle(title.decode()),
