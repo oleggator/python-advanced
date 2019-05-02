@@ -1,4 +1,5 @@
 import asyncio
+from argparse import ArgumentParser
 from asyncio import Queue
 from aioelasticsearch import Elasticsearch
 from crawler import Crawler
@@ -32,10 +33,20 @@ async def pusher(article_queue: Queue, es: Elasticsearch):
 
 
 async def main():
-    url = 'https://docs.python.org/3/'
-    es_endpoint = 'http://localhost:9200'
+    parser = ArgumentParser(description='Process some integers.')
+    parser.add_argument('urls', metavar='URL', nargs='+',
+                        help='urls to crawl')
+    parser.add_argument('-e', '--es-host',
+                        help='elasticsearch url')
+    parser.add_argument('-c', '--crawler-concurrency', type=int, default=10,
+                        help='crawler concurrency')
+    parser.add_argument('-p', '--pusher-concurrency', type=int, default=10,
+                        help='db pusher concurrency')
+    parser.add_argument('-r', '--rate', type=int, default=10,
+                        help='crawler request rate')
+    args = parser.parse_args()
 
-    async with Elasticsearch(es_endpoint, retry_on_timeout=True, max_retries=10) as es:
+    async with Elasticsearch(args.es_host, retry_on_timeout=True, max_retries=10) as es:
         if not await es.indices.exists(INDEX_NAME):
             try:
                 await es.indices.create(INDEX_NAME, mapping)
@@ -43,10 +54,14 @@ async def main():
                 print(e)
 
         article_queue = asyncio.Queue()
-        crawler = Crawler(article_queue=article_queue)
-        await crawler.add_crawl(url)
+        crawler = Crawler(article_queue=article_queue,
+                          concurrency=args.crawler_concurrency,
+                          rate=args.rate)
+        for url in args.urls:
+            await crawler.add_crawl(url)
 
-        consumers = [asyncio.create_task(pusher(article_queue, es)) for _ in range(1)]
+        consumers = [asyncio.create_task(pusher(article_queue, es))
+                     for _ in range(args.pusher_concurrency)]
 
         await crawler.join()
         await article_queue.join()
@@ -55,4 +70,7 @@ async def main():
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        pass
