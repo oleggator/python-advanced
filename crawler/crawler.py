@@ -1,5 +1,4 @@
 import asyncio
-import collections
 import re
 from asyncio import Queue
 from dataclasses import dataclass
