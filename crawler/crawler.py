@@ -34,7 +34,8 @@ class LinkQueue(Queue):
 
 
 class Crawler:
-    link_regex = b'<a.+?href=\"(.+?)\".*?>.*?</a>'
+    title_regex = b'<title.*?>(.*?)</title.*?>'
+    link_regex = b'<a.+?href=\"(.+?)\".*?>.*?</a.*?>'
 
     def __init__(self, rate: int = 10, concurrency: int = 5, article_queue: Queue = None):
         self.h = html2text.HTML2Text()
@@ -73,11 +74,10 @@ class Crawler:
                         if resp.content_type.startswith('text/html'):
                             blob = await resp.read()
 
-                            html_match = re.search(self.html_regex, blob, re.DOTALL)
-                            title, body = html_match.group(1, 2)
+                            title_match = re.search(self.title_regex, blob, re.IGNORECASE)
+                            title = title_match.group(1) if title_match is not None else b''
 
-                            matches = re.finditer(self.link_regex, body, re.MULTILINE | re.DOTALL)
-                            for match in matches:
+                            for match in re.finditer(self.link_regex, blob, re.IGNORECASE | re.DOTALL):
                                 groups = match.groups()
                                 link = urljoin(full_url, groups[0].decode())
                                 path = urlparse(link).path
