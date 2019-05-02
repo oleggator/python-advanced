@@ -15,7 +15,6 @@ class Article:
     title: str
     site: str
     url: str
-    content: str
 
     def __hash__(self):
         return hash(self.url)
@@ -35,7 +34,6 @@ class LinkQueue(Queue):
 
 
 class Crawler:
-    html_regex = b'<title>(.*?)</title>.*?<body>(.*?)</body>'
     link_regex = b'<a.+?href=\"(.+?)\".*?>.*?</a>'
 
     def __init__(self, rate: int = 10, concurrency: int = 5, article_queue: Queue = None):
@@ -82,7 +80,6 @@ class Crawler:
 
                             self.article_queue.put_nowait(Article(title.decode(),
                                                                   root_url,
-                                                                  full_url,
-                                                                  self.h.handle(body.decode())))
+                                                                  full_url))
 
                 self.link_queue.task_done()

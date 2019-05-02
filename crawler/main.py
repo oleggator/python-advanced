@@ -9,7 +9,6 @@ mapping = {
             'title': {'type': 'keyword'},
             'url': {'type': 'keyword'},
             'site': {'type': 'keyword'},
-            'context': {'type': 'text'},
         },
     },
 }
@@ -26,7 +25,6 @@ async def pusher(article_queue: Queue, es: Elasticsearch):
                 'title': article.title,
                 'site': article.site,
                 'url': article.url,
-                'content': article.content,
             })
         except Exception as e:
             print(e)
