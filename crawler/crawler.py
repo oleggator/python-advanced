@@ -50,7 +50,9 @@ class Crawler:
         self.producers = [asyncio.create_task(self.crawl()) for _ in range(concurrency)]
 
     async def join(self):
-        await asyncio.gather(*self.producers)
+        await self.link_queue.join()
+        for task in self.producers:
+            task.cancel()
 
     async def add_crawl(self, url: str):
         await self.link_queue.put((url, urlparse(url).path))
