@@ -20,12 +20,38 @@ static PyObject *matrix_new(PyTypeObject *type, PyObject *args, PyObject *kwds) 
         return PyErr_NoMemory();
     }
 
-    if (!PyArg_ParseTuple(args, "ii", &self->rows, &self->columns)) {
+    PyObject *list = NULL;
+    if (!PyArg_ParseTuple(args, "O", &list)) {
         return NULL;
     }
 
+    if (!PyList_Check(list)) {
+        PyErr_SetString(PyExc_TypeError, "object must be tuple");
+        return NULL;
+    }
+
+    self->rows = PyList_Size(list);
+    self->columns = PyList_Size(PyList_GetItem(list, 0));
     self->matrix = malloc(sizeof(long int) * self->rows * self->columns);
     memset(self->matrix, 0, sizeof(long int) * self->rows * self->columns);
+
+    for (Py_ssize_t i = 0; i < self->rows; ++i) {
+        PyObject *row = PyList_GetItem(list, i);
+        if (!PyList_Check(row)) {
+            PyErr_SetString(PyExc_TypeError, "object must be tuple");
+            return NULL;
+        }
+
+        for (Py_ssize_t j = 0; j < self->columns; ++j) {
+            PyObject *num_obj = PyList_GetItem(row, j);
+            if (!PyLong_Check(num_obj)) {
+                PyErr_SetString(PyExc_TypeError, "object must be number");
+                return NULL;
+            }
+
+            self->matrix[i * self->columns + j] = PyLong_AsLong(num_obj);
+        }
+    }
 
     return (PyObject *)self;
 }

@@ -3,7 +3,10 @@ from matrix import Matrix
 
 def main():
     print(Matrix)
-    m = Matrix(2, 2)
+    m = Matrix([
+        [0, 0],
+        [0, 0],
+    ])
 
     for i in range(2):
         for j in range(2):
