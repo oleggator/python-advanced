@@ -9,7 +9,9 @@ INDEX_NAME = 'sites'
 
 async def handle(request: web.Request):
     if 'q' not in request.rel_url.query:
-        return web.Response(status=400)
+        return web.json_response({
+            'error': 'query is empty',
+        }, status=400)
     query = request.rel_url.query['q']
 
     limit = 10
@@ -22,12 +24,16 @@ async def handle(request: web.Request):
 
     async with Elasticsearch(es_endpoint) as es:
         if not await es.indices.exists(INDEX_NAME):
-            return web.Response(status=404)
+            return web.json_response({
+                'error': f"there is no index '{INDEX_NAME}'",
+            }, status=404)
 
         resp = await es.search('sites', '_doc', q=query, from_=offset, size=limit, sort='_score:desc')
         urls = [doc['_source']['url'] for doc in resp['hits']['hits']]
 
-        return web.json_response(urls)
+        return web.json_response({
+            'payload': urls,
+        })
 
 
 if __name__ == '__main__':
