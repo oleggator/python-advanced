@@ -40,20 +40,29 @@ static PyObject *matrix_new(PyTypeObject *type, PyObject *args, PyObject *kwds) 
 
     for (Py_ssize_t i = 0; i < self->rows; ++i) {
         PyObject *row = PyList_GetItem(list, i);
+        Py_INCREF(row);
         if (!PyList_Check(row)) {
             PyErr_SetString(PyExc_TypeError, "object must be tuple");
             return NULL;
         }
 
+        if (PyList_Size(row) != self->columns) {
+            PyErr_SetString(PyExc_ValueError, "wrong row columns count");
+            return NULL;
+        }
+
         for (Py_ssize_t j = 0; j < self->columns; ++j) {
             PyObject *num_obj = PyList_GetItem(row, j);
+            Py_INCREF(num_obj);
             if (!PyLong_Check(num_obj)) {
                 PyErr_SetString(PyExc_TypeError, "object must be number");
                 return NULL;
             }
 
             self->matrix[i * self->columns + j] = PyLong_AsLong(num_obj);
+            Py_DECREF(num_obj);
         }
+        Py_DECREF(row);
     }
 
     return (PyObject *)self;
@@ -72,20 +81,24 @@ static PyObject *matrix_get(matrix_t *self, PyObject *key) {
         PyErr_SetString(PyExc_TypeError, "object must be tuple");
         return NULL;
     }
+
     PyObject *i_obj = PyTuple_GetItem(key, 0);
+    Py_INCREF(i_obj);
     if (!PyLong_Check(i_obj)) {
         PyErr_SetString(PyExc_TypeError, "object must be number");
         return NULL;
     }
+    Py_ssize_t i = PyLong_AsLong(i_obj);
+    Py_DECREF(i_obj);
 
     PyObject *j_obj = PyTuple_GetItem(key, 1);
+    Py_INCREF(j_obj);
     if (!PyLong_Check(j_obj)) {
         PyErr_SetString(PyExc_TypeError, "object must be number");
         return NULL;
-    }
-
-    Py_ssize_t i = PyLong_AsLong(i_obj);
+    }    
     Py_ssize_t j = PyLong_AsLong(j_obj);
+    Py_DECREF(j_obj);
 
     if (i * self->columns + j < 0 || i * self->columns + j > self->rows * self->columns) {
         PyErr_SetString(PyExc_TypeError, "object must be number");
@@ -101,19 +114,22 @@ static int matrix_set(matrix_t *self, PyObject *key, PyObject *item) {
         return -1;
     }
     PyObject *i_obj = PyTuple_GetItem(key, 0);
+    Py_INCREF(i_obj);
     if (!PyLong_Check(i_obj)) {
         PyErr_SetString(PyExc_TypeError, "object must be number");
         return -1;
     }
+    Py_ssize_t i = PyLong_AsLong(i_obj);
+    Py_DECREF(i_obj);
 
     PyObject *j_obj = PyTuple_GetItem(key, 1);
+    Py_INCREF(j_obj);
     if (!PyLong_Check(j_obj)) {
         PyErr_SetString(PyExc_TypeError, "object must be number");
         return -1;
     }
-
-    Py_ssize_t i = PyLong_AsLong(i_obj);
     Py_ssize_t j = PyLong_AsLong(j_obj);
+    Py_DECREF(j_obj);
 
     if (i * self->columns + j < 0 || i * self->columns + j > self->rows * self->columns) {
         PyErr_SetString(PyExc_TypeError, "object must be number");
