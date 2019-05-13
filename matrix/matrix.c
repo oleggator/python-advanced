@@ -31,6 +31,10 @@ static PyObject *matrix_new(PyTypeObject *type, PyObject *args, PyObject *kwds) 
     }
 
     self->rows = PyList_Size(list);
+    if (self->rows == 0) {
+        PyErr_SetString(PyExc_TypeError, "list is empty");
+        return NULL;
+    }
     self->columns = PyList_Size(PyList_GetItem(list, 0));
     self->matrix = calloc(self->rows * self->columns, sizeof(long int));
 
