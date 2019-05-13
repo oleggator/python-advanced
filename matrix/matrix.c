@@ -32,8 +32,7 @@ static PyObject *matrix_new(PyTypeObject *type, PyObject *args, PyObject *kwds) 
 
     self->rows = PyList_Size(list);
     self->columns = PyList_Size(PyList_GetItem(list, 0));
-    self->matrix = malloc(sizeof(long int) * self->rows * self->columns);
-    memset(self->matrix, 0, sizeof(long int) * self->rows * self->columns);
+    self->matrix = calloc(self->rows * self->columns, sizeof(long int));
 
     for (Py_ssize_t i = 0; i < self->rows; ++i) {
         PyObject *row = PyList_GetItem(list, i);
@@ -185,9 +184,7 @@ PyObject* matrix_multiply(matrix_t *matrix1, matrix_t *matrix2) {
     matrix_t *new_matrix = PyObject_New(matrix_t, &matrix_Type);
     new_matrix->rows = matrix1->rows;
     new_matrix->columns = matrix2->columns;
-
-    new_matrix->matrix = malloc(sizeof(long int) * new_matrix->rows * new_matrix->columns);
-    memset(new_matrix->matrix, 0, sizeof(long int) * new_matrix->rows * new_matrix->columns);
+    new_matrix->matrix = calloc(new_matrix->rows * new_matrix->columns, sizeof(long int));
 
     for (Py_ssize_t i = 0; i < matrix1->rows; ++i) {
         for (Py_ssize_t j = 0; j < matrix2->columns; ++j) {
