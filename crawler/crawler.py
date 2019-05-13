@@ -71,30 +71,31 @@ class Crawler:
                 self.locked_coroutine_count -= 1
 
                 full_url = urljoin(root_url, path)
-                async with self.throttler, session.get(full_url, allow_redirects=False) as resp:
-                    if resp.status != 200:
-                        print(f'error status: {resp.status}')
-                        self.link_queue.task_done()
-                        continue
+                async with self.throttler:
+                    async with session.get(full_url, allow_redirects=False) as resp:
+                        if resp.status != 200:
+                            print(f'error status: {resp.status}')
+                            self.link_queue.task_done()
+                            continue
 
-                    if resp.content_type.startswith('text/html'):
-                        blob = await resp.read()
+                        if resp.content_type.startswith('text/html'):
+                            blob = await resp.read()
 
-                        title_match = re.search(self.title_regex, blob, re.IGNORECASE)
-                        title = title_match.group(1) if title_match is not None else b''
+                            title_match = re.search(self.title_regex, blob, re.IGNORECASE)
+                            title = title_match.group(1) if title_match is not None else b''
 
-                        for match in re.finditer(self.link_regex, blob, re.IGNORECASE | re.DOTALL):
-                            groups = match.groups()
-                            link = urljoin(full_url, groups[0].decode())
-                            path = urlparse(link).path
+                            for match in re.finditer(self.link_regex, blob, re.IGNORECASE | re.DOTALL):
+                                groups = match.groups()
+                                link = urljoin(full_url, groups[0].decode())
+                                path = urlparse(link).path
 
-                            if urlparse(link).netloc == urlparse(root_url).netloc:
-                                await self.link_queue.put((root_url, path))
+                                if urlparse(link).netloc == urlparse(root_url).netloc:
+                                    await self.link_queue.put((root_url, path))
 
-                        self.article_queue.put_nowait(Article(
-                            title=self.h.handle(title.decode()),
-                            site=root_url,
-                            url=full_url,
-                        ))
+                            self.article_queue.put_nowait(Article(
+                                title=self.h.handle(title.decode()),
+                                site=root_url,
+                                url=full_url,
+                            ))
 
                 self.link_queue.task_done()
