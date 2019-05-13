@@ -284,10 +284,10 @@ static PyObject *matrix_str(matrix_t *self) {
 }
 
 static PySequenceMethods matrix_as_sequence = {
-    .sq_length = (lenfunc)matrix_length,
-    .sq_concat = (binaryfunc)matrix_concat,
-    .sq_repeat = (ssizeargfunc)matrix_repeat,
-    .sq_contains = (objobjproc)matrix_contains,
+    .sq_length      = (lenfunc)matrix_length,
+    .sq_concat      = (binaryfunc)matrix_concat,
+    .sq_repeat      = (ssizeargfunc)matrix_repeat,
+    .sq_contains    = (objobjproc)matrix_contains,
 };
 
 static PyMethodDef matrix_methods[] = {
@@ -296,13 +296,13 @@ static PyMethodDef matrix_methods[] = {
 };
 
 static PyNumberMethods matris_as_number = {
-    .nb_add = (binaryfunc)matrix_concat,
+    .nb_add             = (binaryfunc)matrix_concat,
     .nb_matrix_multiply = (binaryfunc)matrix_multiply,
 };
 
 static PyMappingMethods matrix_as_mapping = {
-    .mp_subscript = (binaryfunc)matrix_get,
-    .mp_ass_subscript = (objobjargproc)matrix_set,
+    .mp_subscript       = (binaryfunc)matrix_get,
+    .mp_ass_subscript   = (objobjargproc)matrix_set,
 };
 
 PyTypeObject matrix_Type = {
@@ -315,13 +315,13 @@ PyTypeObject matrix_Type = {
     0,                                               /* tp_getattr */
     0,                                               /* tp_setattr */
     0,                                               /* tp_reserved */
-    (reprfunc)matrix_repr,                             /* tp_repr */
-    &matris_as_number,                                               /* tp_as_number */
+    (reprfunc)matrix_repr,                           /* tp_repr */
+    &matris_as_number,                               /* tp_as_number */
     &matrix_as_sequence,                             /* tp_as_sequence */
-    &matrix_as_mapping,                                               /* tp_as_mapping */
+    &matrix_as_mapping,                              /* tp_as_mapping */
     0,                                               /* tp_hash */
     0,                                               /* tp_call */
-    (reprfunc)matrix_str,                                               /* tp_str */
+    (reprfunc)matrix_str,                            /* tp_str */
     0,                                               /* tp_getattro */
     0,                                               /* tp_setattro */
     0,                                               /* tp_as_buffer */
