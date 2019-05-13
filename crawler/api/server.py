@@ -16,11 +16,21 @@ async def handle(request: web.Request):
 
     limit = 10
     if 'limit' in request.rel_url.query:
-        limit = request.rel_url.query['limit']
+        if not request.rel_url.query['limit'].isdigit():
+            return web.json_response({
+                'error': "parameter 'limit' must be integer",
+            }, status=400)
+
+        limit = int(request.rel_url.query['limit'])
 
     offset = 0
     if 'offset' in request.rel_url.query:
-        offset = request.rel_url.query['offset']
+        if not request.rel_url.query['offset'].isdigit():
+            return web.json_response({
+                'error': "parameter 'offset' must be integer",
+            }, status=400)
+
+        offset = int(request.rel_url.query['offset'])
 
     async with Elasticsearch(es_endpoint) as es:
         if not await es.indices.exists(INDEX_NAME):
