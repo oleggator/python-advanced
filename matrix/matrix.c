@@ -229,7 +229,7 @@ PyObject* matrix_transpose(matrix_t *self) {
     for (Py_ssize_t i = 0; i < new_matrix->rows; ++i) {
         for (Py_ssize_t j = 0; j < new_matrix->columns; ++j) {
             new_matrix->matrix[i * new_matrix->columns + j]
-                = self->matrix[j * self->rows + i];
+                = self->matrix[j * self->columns + i];
         }
     }
 
