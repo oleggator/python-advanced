@@ -247,7 +247,7 @@ static PyObject *matrix_repr(matrix_t *self) {
     writer.min_length = 10;
     PyObject *el_str = NULL;
 
-    if (_PyUnicodeWriter_WriteASCIIString(&writer, "<Matrix {\n", 8) < 0) {
+    if (_PyUnicodeWriter_WriteASCIIString(&writer, "<Matrix {\n", 10) < 0) {
         goto error;
     }
 
