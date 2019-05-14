@@ -227,9 +227,9 @@ PyObject* matrix_transpose(matrix_t *self) {
     new_matrix->matrix = malloc(sizeof(long int) * self->rows * self->columns);
 
     for (Py_ssize_t i = 0; i < new_matrix->rows; ++i) {
-        for (Py_ssize_t j = 0; i < new_matrix->columns; ++j) {
+        for (Py_ssize_t j = 0; j < new_matrix->columns; ++j) {
             new_matrix->matrix[i * new_matrix->columns + j]
-                = self->matrix[j * new_matrix->columns + i];
+                = self->matrix[j * self->rows + i];
         }
     }
 
