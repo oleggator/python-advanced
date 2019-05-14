@@ -252,11 +252,8 @@ static PyObject *matrix_repr(matrix_t *self) {
     }
 
     for (Py_ssize_t i = 0; i < self->rows * self->columns; ++i) {
-        if (i != 0 && (i % self->columns == 1)) {
-            el_str = PyUnicode_FromFormat("%d\n", self->matrix[i]);
-        } else {
-            el_str = PyUnicode_FromFormat("%d ", self->matrix[i]);
-        }
+        el_str = PyUnicode_FromFormat((i + 1) % self->columns ? "%d " : "%d\n",
+            self->matrix[i]);
 
         if (_PyUnicodeWriter_WriteStr(&writer, el_str)) {
             Py_DECREF(el_str);
