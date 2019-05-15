@@ -209,9 +209,9 @@ PyObject* matrix_multiply(matrix_t *matrix1, matrix_t *matrix2) {
     for (Py_ssize_t i = 0; i < matrix1->rows; ++i) {
         for (Py_ssize_t j = 0; j < matrix2->columns; ++j) {
             for (Py_ssize_t k = 0; k < matrix1->columns; ++k) {
-                new_matrix->matrix[i * new_matrix->rows + j]
-                    += matrix1->matrix[i * new_matrix->rows + k]
-                    * matrix2->matrix[k * new_matrix->rows + j];
+                new_matrix->matrix[i * new_matrix->columns + j]
+                    += matrix1->matrix[i * matrix1->columns + k]
+                    * matrix2->matrix[k * matrix2->columns + j];
             }
         }
     }
