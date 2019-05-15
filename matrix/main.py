@@ -9,6 +9,7 @@ def test(matrix_class):
     ])
 
     n = 2 * m # multiply matrix by integer
+    n = n / 2 # divide matrix by integer
     o = m + m # sum matrices
     p = m.transpose() # transpose
     q = m @ p # multiply matrices

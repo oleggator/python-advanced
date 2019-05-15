@@ -176,6 +176,26 @@ PyObject* matrix_repeat(matrix_t *self, Py_ssize_t n) {
     return (PyObject *)new_matrix;
 }
 
+PyObject *matrix_true_divide(matrix_t *self, PyObject *divider) {
+    if (!PyLong_Check(divider)) {
+        PyErr_SetString(PyExc_TypeError, "object must be number");
+        return NULL;
+    }
+    Py_ssize_t n = PyLong_AsLong(divider);
+
+    matrix_t *new_matrix = PyObject_New(matrix_t, &matrix_Type);
+
+    new_matrix->rows = self->rows;
+    new_matrix->columns = self->columns;
+    new_matrix->matrix = malloc(sizeof(long int) * self->rows * self->columns);
+
+    for (Py_ssize_t i = 0; i < self->rows * self->columns; ++i) {
+        new_matrix->matrix[i] = self->matrix[i] / n;
+    }
+
+    return (PyObject *)new_matrix;
+}
+
 PyObject* matrix_concat(matrix_t *matrix1, matrix_t *matrix2) {
     if (matrix1->rows != matrix2->rows|| matrix1->columns != matrix2->columns) {
         PyErr_SetString(PyExc_TypeError, "matrix must be the same size");
@@ -295,6 +315,7 @@ static PyMethodDef matrix_methods[] = {
 static PyNumberMethods matris_as_number = {
     .nb_add             = (binaryfunc)matrix_concat,
     .nb_matrix_multiply = (binaryfunc)matrix_multiply,
+    .nb_true_divide     = (binaryfunc)matrix_true_divide,
 };
 
 static PyMappingMethods matrix_as_mapping = {

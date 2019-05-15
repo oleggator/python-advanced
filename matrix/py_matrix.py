@@ -54,3 +54,10 @@ class PyMatrix:
 
     def __str__(self):
         return str(self._matrix)
+            
+    def __truediv__(self, other):
+        new_matrix = copy.copy(self)
+        for i in range(self._rows * self._columns):
+            new_matrix._matrix[i] //= other
+
+        return new_matrix
