@@ -52,8 +52,17 @@ class PyMatrix:
         i, j = key
         return self._matrix[i * self._columns + j]
 
+    def __repr__(self):
+        string = '<PyMatrix {\n'
+        for i in range(self._rows * self._columns):
+            string += str(self._matrix[i]) + (' ' if (i+1) % self._columns else '\n')
+
+        string += '}'
+
+        return string
+
     def __str__(self):
-        return str(self._matrix)
+        return self.__repr__()
             
     def __truediv__(self, other):
         new_matrix = copy.copy(self)
