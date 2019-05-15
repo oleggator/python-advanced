@@ -1,33 +1,22 @@
-from matrix import Matrix
+from matrix import Matrix as CMatrix
+from py_matrix import PyMatrix
 
-
-def main():
-    print(Matrix)
-    m = Matrix([
-        [0, 0],
-        [0, 0],
+def test(matrix_class):
+    m = matrix_class([
+        [1, 2],
+        [3, 4],
+        [5, 6],
     ])
 
-    for i in range(2):
-        for j in range(2):
-            m[(i,j)] = i * 2 + j
+    n = 2 * m # multiply matrix by integer
+    o = m + m # sum matrices
+    p = m.transpose() # transpose
+    q = m @ p # multiply matrices
+    r = 2 in m
 
-    n = 2 * m
-    for i in range(2):
-        for j in range(2):
-            print(n[(i,j)])
-
-    o = n + m
-    for i in range(2):
-        for j in range(2):
-            print(o[(i,j)])
-
-    p = m @ n
-    for i in range(2):
-        for j in range(2):
-            print(p[(i,j)])
-
-    print(p)
+def main():
+    test(CMatrix)
+    test(PyMatrix)
 
 if __name__ == '__main__':
     main()
