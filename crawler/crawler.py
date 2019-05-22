@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import re
 from asyncio import Queue, Event
 from dataclasses import dataclass
@@ -74,7 +75,7 @@ class Crawler:
                 async with self.throttler:
                     async with session.get(full_url, allow_redirects=False) as resp:
                         if resp.status != 200:
-                            print(f'error status: {resp.status}')
+                            logging.error(f'error status: {resp.status}')
                             self.link_queue.task_done()
                             continue
 

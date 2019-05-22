@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from argparse import ArgumentParser
 from asyncio import Queue
 from aioelasticsearch import Elasticsearch
@@ -20,7 +21,7 @@ INDEX_NAME = 'sites'
 async def pusher(article_queue: Queue, es: Elasticsearch) -> None:
     while True:
         article = await article_queue.get()
-        print(article.url)
+        logging.info(article.url)
         try:
             await es.index('sites', '_doc', id=article.url, body={
                 'title': article.title,
@@ -28,7 +29,7 @@ async def pusher(article_queue: Queue, es: Elasticsearch) -> None:
                 'url': article.url,
             })
         except Exception as e:
-            print(e)
+            logging.error(e)
         article_queue.task_done()
 
 
@@ -51,7 +52,7 @@ async def main():
             try:
                 await es.indices.create(INDEX_NAME, mapping)
             except Exception as e:
-                print(e)
+                logging.warning(e)
 
         article_queue = asyncio.Queue()
         crawler = Crawler(article_queue=article_queue,
