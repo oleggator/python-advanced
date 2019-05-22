@@ -1,4 +1,5 @@
 from os import getenv
+from typing import Any
 
 from aioelasticsearch import Elasticsearch
 from aiohttp import web
@@ -6,11 +7,14 @@ from aiohttp import web
 es_endpoint = getenv('ES_ENDPOINT')
 INDEX_NAME = 'sites'
 
-def error(message: str, status: int):
-    return web.json_response({ 'error': message }, status=status)
 
-def payload(payload: str, status: int = 200):
-    return web.json_response({ 'payload': payload }, status=status)
+def error(message: str, status: int):
+    return web.json_response({'error': message}, status=status)
+
+
+def payload(data: Any, status: int = 200):
+    return web.json_response({'payload': data}, status=status)
+
 
 async def handle(request: web.Request):
     if 'q' not in request.rel_url.query:
