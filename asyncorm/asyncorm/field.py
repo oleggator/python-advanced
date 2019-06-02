@@ -49,3 +49,10 @@ class DateTimeField(Field):
 
     def __init__(self, required=True, default=None, primary_key=False):
         super().__init__(datetime, required, default, primary_key)
+
+
+class SerialField(Field):
+    type = 'serial'
+
+    def __init__(self, required=True, default=None, primary_key=False):
+        super().__init__(int, required, default, primary_key)
