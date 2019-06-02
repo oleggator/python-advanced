@@ -61,7 +61,7 @@ class Model(metaclass=ModelMeta):
             raise ORMError('primary key required')
 
     async def save(self, db_conn: Connection):
-        field_names = self.get_field_names()
+        field_names = [field_name for field_name in self.get_field_names() if getattr(self, field_name) is not None]
         field_values = tuple(getattr(self, field_name) for field_name in field_names)
 
         field_names_string = ', '.join(field_names)
