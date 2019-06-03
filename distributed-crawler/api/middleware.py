@@ -1,4 +1,5 @@
 from functools import wraps
+from aiohttp.web import middleware
 
 from helpers import respond
 
@@ -8,7 +9,7 @@ class AuthMiddleware:
         self.auth = auth
 
     async def __call__(self, app, handler):
-        async def middleware(request):
+        async def func(request):
             request.user = None
             token = request.headers.get('X-Token', None)
             if token:
@@ -20,7 +21,15 @@ class AuthMiddleware:
 
             return await handler(request)
 
-        return middleware
+        return func
+
+
+@middleware
+async def exception_middleware(request, handler):
+    try:
+        return await handler(request)
+    except Exception as e:
+        return respond({}, str(e), 500)
 
 
 def login_required(handler):

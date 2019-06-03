@@ -1,3 +1,5 @@
+import logging
+
 from aioelasticsearch import Elasticsearch
 from aiohttp.abc import Request
 from aiohttp.web_response import Response
@@ -68,7 +70,18 @@ async def get_current_user(request: Request) -> Response:
 
 @login_required
 async def index(request: Request) -> Response:
-    return respond('not implemented')
+    post = await request.post()
+
+    domain = post.get('domain')
+    if domain is None:
+        respond({}, 'domain field is required', 400)
+
+    https = post.get('https')
+    if https is None:
+        respond({}, 'domain field is required', 400)
+
+    await request.app.index(domain=domain, https=https)
+    return respond('queued')
 
 
 @login_required
