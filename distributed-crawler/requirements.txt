@@ -1,0 +1,5 @@
+html2text
+aiohttp
+asyncio_throttle
+aioelasticsearch
+aio_pika

@@ -1,5 +1,9 @@
 version: '3'
 services:
+  crawler:
+    image: crawler
+    build: .
+
   crawler-api:
     image: crawler-api
     build: ./api
