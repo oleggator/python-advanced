@@ -29,7 +29,7 @@ class QuerySet:
         table_name = self.model_cls._table_name
         field_names = self.model_cls.get_field_names()
         field_names_string = ', '.join(field_names)
-        where_fields_string = f'where {" AND ".join(fields)}'
+        where_fields_string = f'where {" AND ".join(fields)}' if len(fields) != 0 else ''
 
         query = f'select {field_names_string} from {table_name} {where_fields_string}'
 
