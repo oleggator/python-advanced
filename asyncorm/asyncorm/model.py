@@ -75,10 +75,9 @@ class Model(metaclass=ModelMeta):
         '''
         await db_conn.execute(query, *field_values, *field_values)
 
-    def delete(self, db_conn: Connection):
-        query = f'DELETE FROM {self.Meta.table_name} WHERE {self.pk_field_name}=?'
-        cursor = db_conn.cursor()
-        cursor.execute(query, (getattr(self, self.pk_field_name),))
+    async def delete(self, db_conn: Connection):
+        query = f'DELETE FROM {self.Meta.table_name} WHERE {self.pk_field_name} = $1'
+        await db_conn.execute(query, getattr(self, self.pk_field_name))
 
     @classmethod
     async def ensure_table(cls, db_conn: Connection):

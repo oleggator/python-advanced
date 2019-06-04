@@ -65,6 +65,7 @@ async def main():
     print(user)
 
     queried_user = await Users.objects.get(conn, pk=1)
+    await queried_user.delete(conn)
 
     queried_user.email = 'peps'
     await queried_user.save(conn)
