@@ -66,7 +66,7 @@ class QuerySet:
     async def get(self, pk):
         pk_name = self.model_cls.pk_field_name
         pk_validated = getattr(self.model_cls, pk_name).validate(pk)
-        result = await self.filter(**{pk_name: pk_validated}).evaluate()
+        result = await self.filter(**{pk_name: pk_validated})
         if len(result) == 0:
             raise DoesNotExistError(f'{self.model_cls.__name__} with {pk_name}={pk_validated} does not exists')
         return result[0]
@@ -74,6 +74,8 @@ class QuerySet:
     def all(self):
         return deepcopy(self)
 
-    # broken
     def __iter__(self):
-        return iter(self.evaluate())
+        return iter(self.evaluate().__await__())
+
+    def __await__(self):
+        return self.evaluate().__await__()
