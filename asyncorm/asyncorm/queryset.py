@@ -46,22 +46,23 @@ class QuerySet:
 
         return obj
 
-    def delete(self):
+    async def delete(self):
         fields = []
         values = []
+        i = 1
         for k, v in self.filtered_fields.items():
-            fields.append(f'{k} = ?')
+            fields.append(f'{k} = ${i}')
             validated_value = getattr(self.model_cls, k).validate(v)
             values.append(validated_value)
+            i += 1
 
         table_name = self.model_cls._table_name
-        where_fields_string = f'where {", ".join(fields)}'
+        where_fields_string = f'where {" AND ".join(fields)}' if len(fields) != 0 else ''
 
         query = f'delete from {table_name} {where_fields_string}'
-        cursor = self.conn.cursor()
-        cursor.execute(query, values)
+        await self.conn.execute(query, values)
 
-        self.conn.commit()
+        await self.conn.commit()
 
     async def get(self, pk):
         pk_name = self.model_cls.pk_field_name
