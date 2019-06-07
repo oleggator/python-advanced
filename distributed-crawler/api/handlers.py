@@ -43,7 +43,12 @@ async def login(request: Request) -> Response:
     post = await request.post()
 
     email = post.get('email')
+    if email is None:
+        respond({}, 'email field is required', 400)
+
     password = post.get('password')
+    if password is None:
+        respond({}, 'password field is required', 400)
 
     auth = request.app.auth
     token = await auth.login(email=email, password=password)
@@ -54,8 +59,16 @@ async def signup(request: Request) -> Response:
     post = await request.post()
 
     email = post.get('email')
+    if email is None:
+        respond({}, 'email field is required', 400)
+
     password = post.get('password')
+    if password is None:
+        respond({}, 'password field is required', 400)
+
     name = post.get('name')
+    if name is None:
+        respond({}, 'name field is required', 400)
 
     auth = request.app.auth
     user = await auth.signup(email=email, password=password, name=name)
