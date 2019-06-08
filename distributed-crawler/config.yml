@@ -1,0 +1,5 @@
+amqp_conn: amqp://guest:guest@broker/
+es_endpoint: http://elasticsearch:9200
+crawler_concurrency: 10
+pusher_concurrency: 10
+rate: 10

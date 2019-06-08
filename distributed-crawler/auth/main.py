@@ -1,6 +1,7 @@
 import asyncio
 
 import asyncpg
+import yaml
 from aio_pika import connect_robust
 from aio_pika.patterns import RPC
 
@@ -9,10 +10,19 @@ from tokenstorage import TokenStorage
 
 
 async def main():
-    connection = await connect_robust('amqp://guest:guest@broker/')
+    with open('config.yml', 'r') as config_file:
+        config = yaml.load(config_file)
 
-    db_conn = await asyncpg.connect(user='postgres', password='postgres',
-                                 database='postgres', host='postgres')
+    amqp_endpoint = config.get('amqp_endpoint', 'amqp://guest:guest@broker/')
+    postgres_user = config.get('postgres_user', 'postgres')
+    postgres_password = config.get('postgres_password', 'postgres')
+    postgres_db = config.get('postgres_db', 'postgres')
+    postgres_host = config.get('postgres_host', 'postgres')
+
+    connection = await connect_robust(amqp_endpoint)
+
+    db_conn = await asyncpg.connect(user=postgres_user, password=postgres_password,
+                                    database=postgres_db, host=postgres_host)
 
     await Users.ensure_table(db_conn)
     await Tokens.ensure_table(db_conn)

@@ -1,0 +1,5 @@
+amqp_conn: amqp://guest:guest@broker/
+postgres_host: postgres
+postgres_database: postgres
+postgres_user: postgres
+postgres_password: postgres

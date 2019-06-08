@@ -1,8 +1,8 @@
 import asyncio
 import logging
 from asyncio import Queue
-from os import getenv
 
+import yaml
 from aio_pika import connect_robust
 from aio_pika.patterns import Master
 from aioelasticsearch import Elasticsearch
@@ -19,13 +19,6 @@ mapping = {
 }
 
 INDEX_NAME = 'sites'
-
-amqp_endpoint = getenv('AMQP_ENDPOINT', 'amqp://guest:guest@broker/')
-es_endpoint = getenv('ES_ENDPOINT', 'http://elasticsearch:9200')
-crawler_concurrency = getenv('CRAWLER_CONCURRENCY', 10)
-pusher_concurrency = getenv('PUSHER_CONCURRENCY', 10)
-rate = getenv('RATE', 10)
-
 
 current_crawls = set()
 
@@ -53,6 +46,15 @@ async def index(url, *args, **kwargs):
 
 
 async def main():
+    with open('config.yml', 'r') as config_file:
+        config = yaml.load(config_file)
+
+    amqp_endpoint = config.get('amqp_endpoint', 'amqp://guest:guest@broker/')
+    es_endpoint = config.get('es_endpoint', 'http://elasticsearch:9200')
+    crawler_concurrency = config.get('crawler_concurrency', 10)
+    pusher_concurrency = config.get('pusher_concurrency', 10)
+    rate = config.get('rate', 10)
+
     async with Elasticsearch(es_endpoint, retry_on_timeout=True, max_retries=10) as es:
         if not await es.indices.exists(INDEX_NAME):
             try:

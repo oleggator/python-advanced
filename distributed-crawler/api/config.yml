@@ -1,0 +1,2 @@
+amqp_conn: amqp://guest:guest@broker/
+es_endpoint: http://elasticsearch:9200

@@ -10,8 +10,8 @@ from handlers import search, signup, login, get_current_user, index, get_statist
 
 
 async def main():
-    es_endpoint = getenv('ES_ENDPOINT', 'http://elasticsearch:9200')
-    amqp_endpoint = getenv('AMQP_ENDPOINT', 'amqp://guest:guest@broker/')
+    es_endpoint = getenv('es_endpoint', 'http://elasticsearch:9200')
+    amqp_endpoint = getenv('amqp_endpoint', 'amqp://guest:guest@broker/')
 
     connection = await connect_robust(amqp_endpoint)
     channel = await connection.channel()
