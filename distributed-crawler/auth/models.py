@@ -3,7 +3,7 @@ from asyncorm.model import Model
 
 
 class Users(Model):
-    id = SerialField(primary_key=True, default=0)
+    id = SerialField(primary_key=True)
     name = TextField(default='default user name')
     email = TextField(default='default user name')
     password = TextField(default='default user name')
@@ -16,7 +16,7 @@ class Users(Model):
 
 
 class Tokens(Model):
-    id = SerialField(primary_key=True, default=0)
+    id = SerialField(primary_key=True)
     user_id = IntegerField()
     token = TextField(default='default user name')
 
@@ -27,7 +27,7 @@ class Tokens(Model):
 
 
 class CrawlerStats(Model):
-    id = SerialField(primary_key=True, default=0)
+    id = SerialField(primary_key=True)
     author_id = IntegerField()
 
     https = IntegerField()
