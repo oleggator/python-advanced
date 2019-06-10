@@ -1,0 +1,55 @@
+version: '3'
+services:
+  crawler:
+    image: crawler
+    build: .
+
+  crawler-api:
+    image: crawler-api
+    build: ./api
+    ports:
+      - 8080:8080
+
+  auth:
+    image: auth
+    build: ./auth
+
+  postgres:
+    image: postgres:11.3-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
+
+  broker:
+    image: rabbitmq:3.7.15-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  elasticsearch:
+    image: elasticsearch:7.0.0
+    environment:
+      - node.name=es01
+      - cluster.initial_master_nodes=es01
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+
+  kibana:
+    image: kibana:7.0.0
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
