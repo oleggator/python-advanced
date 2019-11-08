@@ -46,7 +46,7 @@ C extension matrix implementation, 3x times faster than Python implementation.
 - SQLite
 
 ## [QR Code Bot](qr)
-Generates QR codes and send them to VK user
+Generates QR codes and sends them to VK user
 #### Technologies
 - multiprocessing
 - VK API
