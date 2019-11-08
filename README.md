@@ -33,6 +33,7 @@
 ## [Matrix C module](matrix)
 C extension matrix implementation, 3x times faster than Python implementation.
 #### Operations
+- sum of matrices
 - multiplication by matrix, by integer
 - division by integer
 - transpose
