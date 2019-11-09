@@ -66,7 +66,7 @@ async def main():
         for _ in range(pusher_concurrency):
             asyncio.create_task(pusher(article_queue, es))
 
-        async def worker(*, domain, https):
+        async def worker(*, domain: str, https: bool):
             url = f'{"https" if https else "http"}://{domain}/'
             asyncio.create_task(index(url,
                                       article_queue=article_queue,
