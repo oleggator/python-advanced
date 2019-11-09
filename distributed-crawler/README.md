@@ -25,7 +25,7 @@ High perfomance web crawler
     ```
 4. Add crawl task
     ```bash
-    curl -X POST -H "X-Token: <Token ID>" -d "domain=docs.python.org&http=1" http://localhost:8080/api/v1/index
+    curl -X POST -H "X-Token: <Token ID>" -d "domain=docs.python.org&https=1" http://localhost:8080/api/v1/index
     ```
 5. Get result
     ```bash
