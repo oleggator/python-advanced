@@ -48,10 +48,10 @@
 Пример payload задачи на обкачку, которую может ожидать краулер из брокера сообщений:
 ```json
 {
-    “type”: “index”,
-    “index”: {
-        “domain”: “python.org”,
-        “https”: true
+    "type": "index",
+    "index": {
+        "domain": "python.org",
+        "https": true
     }
 }
 ```
