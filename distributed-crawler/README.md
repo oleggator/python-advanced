@@ -32,7 +32,7 @@ High perfomance web crawler
     curl http://localhost:8080/api/v1/search?q=asyncio&limit=20&offset=5
     ```
 
-## Arhitecture
+## Architecture
 ```
                      +-------------+                      
 +---------------+    |             |     +-----------------+
