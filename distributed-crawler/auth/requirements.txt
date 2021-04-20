@@ -13,4 +13,4 @@ PyYAML==5.1.1
 urllib3==1.25.1
 yarl==1.3.0
 -e git+https://github.com/oleggator/python-advanced.git#egg=asyncorm&subdirectory=asyncorm
-asyncpg==0.18.3
+asyncpg==0.21.0
